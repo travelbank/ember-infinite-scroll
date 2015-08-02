@@ -16,6 +16,7 @@ export default Em.Component.extend({
   debounce: null, // Defaults to false
 
   setup: function() {
+    // console.log( 'eis setup' );
     /** Setup some default selectors */
     this.safeSet( '$scrollElement', $window );
     this.safeSet( 'scrollEvent', 'scroll.' + this.elementId );
@@ -28,13 +29,18 @@ export default Em.Component.extend({
     if( typeof this.get( 'debounce' ) != 'boolean' && typeof this.get( 'debounce' ) != 'number' ){
       this.safeSet( 'debounce', false );
     }
+    /** Generate a random ID for our scroll event */
+    var scrollHandlerId = 'scrollHandler_' + Math.ceil( Math.random() * 100000 )
+    // console.log( 'eis listening to event: ' + scrollHandlerId );
+    this.safeSet( 'scrollHandlerId', scrollHandlerId );
     /** Listen for the scroll event on our element */
-    this.get( '$scrollElement' ).on(this.get( 'scrollEvent' ), bind(this, this.didScroll));
+    this.get( '$scrollElement' ).on( this.get( 'scrollEvent' ), null, { scrollHandlerId: scrollHandlerId }, bind( this, this.didScroll ) );
   }.on('didInsertElement'),
 
   teardown: function() {
+    // console.log( 'eis teardown: ' + this.get( 'scrollHandlerId' ) );
     /** Monitoring scrolling */
-    this.get( '$scrollElement' ).off(this.get( 'scrollEvent' ));
+    this.get( '$scrollElement' ).off( this.get( 'scrollEvent' ), null, { scrollHandlerId: this.get( 'scrollHandlerId' ) }, bind( this, this.didScroll ) );
     /** If we have a timeout, clear it */
     if( typeof this.get( 'timeout' ) != 'undefined' ){
       clearTimeout( this.get( 'timeout' ) );
@@ -42,6 +48,7 @@ export default Em.Component.extend({
   }.on('willDestroyElement'),
 
   didScroll: function() {
+    // console.log( 'eis didScroll' );
     if( !this.get( 'debounce' ) ){
       /** If we aren't debouncing, handle this directly */
       this.handleScroll.apply( this );
@@ -58,6 +65,7 @@ export default Em.Component.extend({
   },
 
   handleScroll: function(){
+    // console.log( 'eis handleScroll' );
     if (!this.get('isFetching') && this.get('hasMore') && this.isNearBottom()) {
       this.safeSet('isFetching', true);
       this.sendAction('action', bind(this, this.handleFetch));
