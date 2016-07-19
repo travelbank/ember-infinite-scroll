@@ -34,13 +34,13 @@ export default Em.Component.extend({
     // console.log( 'eis listening to event: ' + scrollHandlerId );
     this.safeSet( 'scrollHandlerId', scrollHandlerId );
     /** Listen for the scroll event on our element */
-    this.get( '$scrollElement' ).on( this.get( 'scrollEvent' ), null, { scrollHandlerId: scrollHandlerId }, bind( this, this.didScroll ) );
+    this.get( '$scrollElement' ).on( this.get( 'scrollEvent' ), bind( this, this.didScroll ) );
   }.on('didInsertElement'),
 
   teardown: function() {
     // console.log( 'eis teardown: ' + this.get( 'scrollHandlerId' ) );
     /** Monitoring scrolling */
-    this.get( '$scrollElement' ).off( this.get( 'scrollEvent' ), null, { scrollHandlerId: this.get( 'scrollHandlerId' ) }, bind( this, this.didScroll ) );
+    this.get( '$scrollElement' ).off(this.get('scrollEvent'));
     /** If we have a timeout, clear it */
     if( typeof this.get( 'timeout' ) != 'undefined' ){
       clearTimeout( this.get( 'timeout' ) );
