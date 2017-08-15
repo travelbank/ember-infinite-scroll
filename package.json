@@ -16,6 +16,9 @@
   },
   "author": "Jason Kriss",
   "license": "MIT",
+  "dependencies": {
+    "ember-cli-babel": "^4.0.0"
+  },
   "devDependencies": {
     "body-parser": "^1.2.0",
     "broccoli-asset-rev": "0.3.1",
